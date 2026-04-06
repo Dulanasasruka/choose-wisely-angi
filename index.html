@@ -6,7 +6,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   />
-  <title>Important Question</title>
+  <title>choose wisely</title>
 
   <style>
     * {
@@ -14,117 +14,529 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    :root {
+      --bg1: #f8f9ff;
+      --bg2: #eef2ff;
+      --card: rgba(255, 255, 255, 0.82);
+      --text: #111111;
+      --muted: #6b7280;
+      --pill: #eef1f8;
+      --shadow: 0 20px 50px rgba(50, 60, 120, 0.12);
+      --radius: 28px;
+    }
+
     html, body {
       margin: 0;
       padding: 0;
       min-height: 100%;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: linear-gradient(180deg, #f7f8ff 0%, #eef2ff 100%);
-      color: #111;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Arial, sans-serif;
+      color: var(--text);
+      overflow: hidden;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.9), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(220,228,255,0.95), transparent 40%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
     }
 
     body {
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px 16px;
+      display: grid;
+      place-items: center;
+      padding: max(18px, env(safe-area-inset-top))
+               max(16px, env(safe-area-inset-right))
+               max(18px, env(safe-area-inset-bottom))
+               max(16px, env(safe-area-inset-left));
+      position: relative;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0.55;
+      animation: floatOrb 7s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .orb1 {
+      width: 150px;
+      height: 150px;
+      top: 7%;
+      left: -25px;
+      background: rgba(193, 205, 255, 0.85);
+    }
+
+    .orb2 {
+      width: 120px;
+      height: 120px;
+      bottom: 10%;
+      right: -14px;
+      background: rgba(255, 210, 230, 0.8);
+      animation-delay: 1.4s;
     }
 
     .card {
-      width: min(100%, 420px);
-      background: rgba(255, 255, 255, 0.96);
-      border-radius: 24px;
-      padding: 28px 20px 24px;
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+      width: min(100%, 430px);
+      min-height: 560px;
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 20px 22px;
       text-align: center;
       position: relative;
       overflow: hidden;
+      animation: cardIn 0.8s ease;
+    }
+
+    .shine {
+      position: absolute;
+      inset: -30%;
+      background: linear-gradient(
+        120deg,
+        transparent 35%,
+        rgba(255,255,255,0.34) 48%,
+        transparent 62%
+      );
+      transform: translateX(-100%) rotate(8deg);
+      animation: shineSweep 5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4b5563;
+      animation: fadeUp 0.7s ease both;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background: #9bb0ff;
+      border-radius: 50%;
+      display: inline-block;
     }
 
     h1 {
-      margin: 0 0 12px;
-      font-size: clamp(24px, 6vw, 32px);
-      line-height: 1.2;
-      letter-spacing: -0.02em;
+      margin: 18px 0 8px;
+      font-size: clamp(28px, 7vw, 35px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.8s ease 0.08s both;
+    }
+
+    .name {
+      display: inline-block;
+      position: relative;
+    }
+
+    .name::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 2px;
+      height: 8px;
+      background: rgba(191, 203, 255, 0.45);
+      z-index: -1;
+      border-radius: 999px;
     }
 
     .subtext {
-      margin: 0 0 24px;
-      font-size: 15px;
-      line-height: 1.5;
-      color: #666;
+      margin: 0 auto 10px;
+      max-width: 260px;
+      font-size: 14px;
+      line-height: 1.45;
+      color: var(--muted);
+      animation: fadeUp 0.8s ease 0.16s both;
+    }
+
+    .character-wrap {
+      margin: 18px auto 8px;
+      width: 150px;
+      height: 150px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      animation: fadeUp 0.8s ease 0.22s both;
+    }
+
+    .glow-ring {
+      position: absolute;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(191,203,255,0.24), rgba(255,255,255,0));
+      animation: pulseGlow 2.8s ease-in-out infinite;
+    }
+
+    .heart-orb {
+      width: 110px;
+      height: 110px;
+      position: relative;
+      transform: rotate(-45deg);
+      animation: heartFloat 3.6s ease-in-out infinite;
+      transition: transform 0.22s ease, filter 0.22s ease;
+      filter: drop-shadow(0 14px 24px rgba(125, 135, 200, 0.18));
+    }
+
+    .heart-shape {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f4ff 100%);
+      border-radius: 24px 24px 10px 10px;
+      transform: rotate(0deg);
+      overflow: hidden;
+    }
+
+    .heart-shape::before,
+    .heart-shape::after {
+      content: "";
+      position: absolute;
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(180deg, #ffffff 0%, #f1f4ff 100%);
+      border-radius: 50%;
+    }
+
+    .heart-shape::before {
+      top: -55px;
+      left: 0;
+    }
+
+    .heart-shape::after {
+      top: 0;
+      left: 55px;
+    }
+
+    .heart-gloss {
+      position: absolute;
+      width: 60px;
+      height: 20px;
+      background: rgba(255,255,255,0.75);
+      border-radius: 999px;
+      top: 18px;
+      left: 18px;
+      transform: rotate(18deg);
+      filter: blur(1px);
+      opacity: 0.85;
+    }
+
+    .face {
+      position: absolute;
+      inset: 0;
+      transform: rotate(45deg);
+    }
+
+    .eye {
+      position: absolute;
+      top: 45px;
+      width: 10px;
+      height: 10px;
+      background: #1f2937;
+      border-radius: 50%;
+      transition: all 0.18s ease;
+    }
+
+    .eye.left { left: 35px; }
+    .eye.right { right: 35px; }
+
+    .mouth {
+      position: absolute;
+      left: 50%;
+      top: 65px;
+      width: 24px;
+      height: 12px;
+      border-bottom: 3px solid #1f2937;
+      border-radius: 0 0 18px 18px;
+      transform: translateX(-50%);
+      transition: all 0.18s ease;
+    }
+
+    .spark-star {
+      position: absolute;
+      font-size: 18px;
+      opacity: 0.8;
+      animation: starFloat 2.4s ease-in-out infinite;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .star1 {
+      top: 12px;
+      right: 12px;
+      animation-delay: 0.2s;
+    }
+
+    .star2 {
+      bottom: 16px;
+      left: 10px;
+      font-size: 14px;
+      animation-delay: 1s;
+    }
+
+    .character-note {
+      font-size: 13px;
+      color: #7f8698;
+      margin-top: 8px;
+      min-height: 18px;
+      font-weight: 600;
     }
 
     .button-area {
       position: relative;
       width: 100%;
-      height: 180px;
-      margin-top: 6px;
+      height: 200px;
+      margin-top: 10px;
       touch-action: manipulation;
+      animation: fadeUp 0.8s ease 0.32s both;
     }
 
     button {
       border: none;
       border-radius: 999px;
-      padding: 14px 20px;
+      min-width: 126px;
+      min-height: 54px;
+      padding: 14px 22px;
       font-size: 16px;
-      font-weight: 600;
+      font-weight: 700;
+      letter-spacing: -0.01em;
       cursor: pointer;
-      min-width: 120px;
-      min-height: 52px;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
       position: absolute;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        left 0.22s ease,
+        top 0.22s ease,
+        background 0.2s ease;
+      will-change: transform, left, top;
     }
 
     button:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
     #yesBtn {
-      left: 18%;
-      top: 88px;
+      left: 12%;
+      top: 106px;
       background: #111;
-      color: #fff;
-      box-shadow: 0 8px 18px rgba(17, 17, 17, 0.18);
+      color: white;
+      box-shadow: 0 12px 24px rgba(17, 17, 17, 0.18);
     }
 
     #noBtn {
-      left: 54%;
-      top: 88px;
-      background: #edf0f8;
+      left: 56%;
+      top: 106px;
+      background: var(--pill);
       color: #111;
+      box-shadow: 0 8px 20px rgba(120, 130, 170, 0.08);
     }
 
     #message {
       min-height: 28px;
-      margin-top: 12px;
+      margin-top: 0;
       font-size: 15px;
-      font-weight: 600;
-      color: #444;
+      font-weight: 700;
+      color: #4a4f60;
+      transition: all 0.18s ease;
     }
 
     #success {
       display: none;
-      margin-top: 18px;
-      padding: 16px 14px;
-      border-radius: 16px;
-      background: #f5f7ff;
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.4;
+      margin-top: 16px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.84), rgba(245,247,255,0.96));
+      border: 1px solid rgba(255,255,255,0.85);
+      border-radius: 22px;
+      padding: 20px 16px;
+      animation: popIn 0.45s ease forwards;
     }
 
-    .mini {
-      margin-top: 10px;
-      font-size: 13px;
-      color: #777;
+    .success-title {
+      font-size: 22px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 8px;
+    }
+
+    .success-sub {
+      font-size: 14px;
+      line-height: 1.45;
+      color: #5e6476;
+    }
+
+    .sparkles {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      display: none;
+    }
+
+    .spark {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      opacity: 0;
+      animation: burst 1s ease forwards;
+    }
+
+    .heart-orb.no-state {
+      transform: rotate(-50deg) scale(1.04);
+      filter: drop-shadow(0 16px 28px rgba(160, 140, 220, 0.18));
+    }
+
+    .heart-orb.no-state .eye {
+      width: 11px;
+      height: 6px;
+      border-radius: 999px;
+      top: 47px;
+    }
+
+    .heart-orb.no-state .mouth {
+      width: 18px;
+      height: 8px;
+      border-bottom: 0;
+      border-top: 3px solid #1f2937;
+      border-radius: 14px 14px 0 0;
+      top: 67px;
+    }
+
+    .heart-orb.yes-state {
+      transform: rotate(-45deg) scale(1.08);
+      filter: drop-shadow(0 18px 30px rgba(120, 170, 220, 0.2));
+    }
+
+    .heart-orb.yes-state .eye {
+      width: 11px;
+      height: 6px;
+      border-radius: 999px;
+      top: 46px;
+    }
+
+    .heart-orb.yes-state .mouth {
+      width: 28px;
+      height: 15px;
+      border-bottom: 3px solid #1f2937;
+      border-radius: 0 0 18px 18px;
+      top: 62px;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes cardIn {
+      from {
+        opacity: 0;
+        transform: scale(0.98) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    @keyframes shineSweep {
+      0% { transform: translateX(-120%) rotate(8deg); }
+      45% { transform: translateX(120%) rotate(8deg); }
+      100% { transform: translateX(120%) rotate(8deg); }
+    }
+
+    @keyframes floatOrb {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-18px) scale(1.05); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(0.96); opacity: 0.7; }
+      50% { transform: scale(1.04); opacity: 1; }
+    }
+
+    @keyframes heartFloat {
+      0%, 100% { transform: rotate(-45deg) translateY(0px); }
+      50% { transform: rotate(-45deg) translateY(-7px); }
+    }
+
+    @keyframes starFloat {
+      0%, 100% { transform: translateY(0px) scale(1); opacity: 0.7; }
+      50% { transform: translateY(-6px) scale(1.08); opacity: 1; }
+    }
+
+    @keyframes burst {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.6);
+      }
+      20% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-90px) scale(1.2);
+      }
     }
 
     @media (max-width: 390px) {
       .card {
-        padding: 24px 16px 20px;
-        border-radius: 20px;
+        min-height: 540px;
+        padding: 22px 16px 20px;
+      }
+
+      .character-wrap {
+        width: 142px;
+        height: 142px;
+      }
+
+      .heart-orb {
+        width: 102px;
+        height: 102px;
+      }
+
+      .heart-shape::before,
+      .heart-shape::after {
+        width: 102px;
+        height: 102px;
+      }
+
+      .heart-shape::after {
+        left: 51px;
+      }
+
+      .eye {
+        top: 42px;
+      }
+
+      .mouth {
+        top: 61px;
       }
 
       .button-area {
@@ -132,39 +544,67 @@
       }
 
       button {
-        min-width: 112px;
+        min-width: 118px;
+        min-height: 52px;
         font-size: 15px;
-        padding: 13px 18px;
       }
 
       #yesBtn {
-        left: 10%;
-        top: 94px;
+        left: 8%;
       }
 
       #noBtn {
-        left: 52%;
-        top: 94px;
+        left: 54%;
       }
     }
   </style>
 </head>
 <body>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+
   <div class="card">
-    <h1>So… are we actually going out this time?</h1>
-    <p class="subtext">Choose wisely.</p>
+    <div class="shine"></div>
+    <div class="badge"><span class="dot"></span> one small question</div>
+
+    <h1><span class="name">Angi</span>, are we actually going out this time?</h1>
+
+    <p class="subtext">choose carefully.</p>
+
+    <div class="character-wrap">
+      <div class="glow-ring"></div>
+
+      <div class="heart-orb" id="heartOrb">
+        <div class="heart-shape">
+          <div class="heart-gloss"></div>
+        </div>
+
+        <div class="face">
+          <div class="eye left"></div>
+          <div class="eye right"></div>
+          <div class="mouth"></div>
+        </div>
+      </div>
+
+      <div class="spark-star star1">✦</div>
+      <div class="spark-star star2">✦</div>
+    </div>
+
+    <div class="character-note" id="characterNote">currently optimistic</div>
 
     <div class="button-area" id="buttonArea">
-      <button id="yesBtn">Yes 😌</button>
-      <button id="noBtn">No 🙄</button>
+      <button id="yesBtn">yeah okay 😌</button>
+      <button id="noBtn">nope 🙄</button>
     </div>
 
     <div id="message"></div>
 
     <div id="success">
-      Good. I’ll accept this answer 😌
-      <div class="mini">now behave and don’t cancel</div>
+      <div class="success-title">good.</div>
+      <div class="success-sub">now don’t do anything unserious.</div>
     </div>
+
+    <div class="sparkles" id="sparkles"></div>
   </div>
 
   <script>
@@ -173,32 +613,63 @@
     const message = document.getElementById("message");
     const success = document.getElementById("success");
     const buttonArea = document.getElementById("buttonArea");
+    const sparkles = document.getElementById("sparkles");
+    const heartOrb = document.getElementById("heartOrb");
+    const characterNote = document.getElementById("characterNote");
 
     const messages = [
-      "again??",
-      "this is getting suspicious",
+      "Angi bfr",
+      "wrong button",
+      "be serious",
       "nice try",
-      "wrong answer",
-      "be serious for once",
-      "not happening"
+      "not that one",
+      "hmm. no"
+    ];
+
+    const notes = [
+      "mildly judging you",
+      "not impressed",
+      "getting suspicious",
+      "still waiting",
+      "this is unserious",
+      "try again properly"
     ];
 
     let msgIndex = 0;
+
+    function setNoFace() {
+      heartOrb.classList.remove("yes-state");
+      heartOrb.classList.add("no-state");
+      characterNote.textContent = notes[msgIndex % notes.length];
+
+      setTimeout(() => {
+        heartOrb.classList.remove("no-state");
+        characterNote.textContent = "currently optimistic";
+      }, 700);
+    }
+
+    function setYesFace() {
+      heartOrb.classList.remove("no-state");
+      heartOrb.classList.add("yes-state");
+      characterNote.textContent = "okay cute";
+    }
 
     function moveNoButton() {
       const areaRect = buttonArea.getBoundingClientRect();
       const btnRect = noBtn.getBoundingClientRect();
 
-      const maxX = areaRect.width - btnRect.width;
-      const maxY = areaRect.height - btnRect.height;
+      const maxX = Math.max(0, areaRect.width - btnRect.width);
+      const maxY = Math.max(0, areaRect.height - btnRect.height);
 
-      const randomX = Math.max(0, Math.floor(Math.random() * maxX));
-      const randomY = Math.max(0, Math.floor(Math.random() * maxY));
+      const randomX = Math.floor(Math.random() * maxX);
+      const randomY = Math.floor(Math.random() * maxY);
 
       noBtn.style.left = randomX + "px";
       noBtn.style.top = randomY + "px";
+      noBtn.style.transform = `rotate(${Math.floor(Math.random() * 16 - 8)}deg)`;
 
       message.textContent = messages[msgIndex % messages.length];
+      setNoFace();
       msgIndex++;
     }
 
@@ -212,9 +683,28 @@
       moveNoButton();
     }, { passive: false });
 
+    function createSparkles() {
+      sparkles.style.display = "block";
+      sparkles.innerHTML = "";
+
+      for (let i = 0; i < 16; i++) {
+        const spark = document.createElement("div");
+        spark.className = "spark";
+        spark.style.left = Math.random() * 100 + "%";
+        spark.style.bottom = (10 + Math.random() * 25) + "%";
+        spark.style.background =
+          i % 2 === 0 ? "rgba(172, 186, 255, 0.95)" : "rgba(255, 212, 231, 0.95)";
+        spark.style.animationDelay = (Math.random() * 0.25) + "s";
+        spark.style.animationDuration = (0.8 + Math.random() * 0.6) + "s";
+        sparkles.appendChild(spark);
+      }
+    }
+
     yesBtn.addEventListener("click", function () {
+      setYesFace();
       buttonArea.style.display = "none";
       message.textContent = "";
+      createSparkles();
       success.style.display = "block";
     });
   </script>
