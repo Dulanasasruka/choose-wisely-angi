@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>Important Question</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: linear-gradient(180deg, #f7f8ff 0%, #eef2ff 100%);
+      color: #111;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+    }
+
+    .card {
+      width: min(100%, 420px);
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 24px;
+      padding: 28px 20px 24px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(24px, 6vw, 32px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .subtext {
+      margin: 0 0 24px;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #666;
+    }
+
+    .button-area {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      margin-top: 6px;
+      touch-action: manipulation;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      min-width: 120px;
+      min-height: 52px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      position: absolute;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    #yesBtn {
+      left: 18%;
+      top: 88px;
+      background: #111;
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(17, 17, 17, 0.18);
+    }
+
+    #noBtn {
+      left: 54%;
+      top: 88px;
+      background: #edf0f8;
+      color: #111;
+    }
+
+    #message {
+      min-height: 28px;
+      margin-top: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #444;
+    }
+
+    #success {
+      display: none;
+      margin-top: 18px;
+      padding: 16px 14px;
+      border-radius: 16px;
+      background: #f5f7ff;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .mini {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    @media (max-width: 390px) {
+      .card {
+        padding: 24px 16px 20px;
+        border-radius: 20px;
+      }
+
+      .button-area {
+        height: 190px;
+      }
+
+      button {
+        min-width: 112px;
+        font-size: 15px;
+        padding: 13px 18px;
+      }
+
+      #yesBtn {
+        left: 10%;
+        top: 94px;
+      }
+
+      #noBtn {
+        left: 52%;
+        top: 94px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>So… are we actually going out this time?</h1>
+    <p class="subtext">Choose wisely.</p>
+
+    <div class="button-area" id="buttonArea">
+      <button id="yesBtn">Yes 😌</button>
+      <button id="noBtn">No 🙄</button>
+    </div>
+
+    <div id="message"></div>
+
+    <div id="success">
+      Good. I’ll accept this answer 😌
+      <div class="mini">now behave and don’t cancel</div>
+    </div>
+  </div>
+
+  <script>
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
+    const success = document.getElementById("success");
+    const buttonArea = document.getElementById("buttonArea");
+
+    const messages = [
+      "again??",
+      "this is getting suspicious",
+      "nice try",
+      "wrong answer",
+      "be serious for once",
+      "not happening"
+    ];
+
+    let msgIndex = 0;
+
+    function moveNoButton() {
+      const areaRect = buttonArea.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = areaRect.width - btnRect.width;
+      const maxY = areaRect.height - btnRect.height;
+
+      const randomX = Math.max(0, Math.floor(Math.random() * maxX));
+      const randomY = Math.max(0, Math.floor(Math.random() * maxY));
+
+      noBtn.style.left = randomX + "px";
+      noBtn.style.top = randomY + "px";
+
+      message.textContent = messages[msgIndex % messages.length];
+      msgIndex++;
+    }
+
+    noBtn.addEventListener("mouseenter", moveNoButton);
+    noBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      moveNoButton();
+    });
+    noBtn.addEventListener("touchstart", function (e) {
+      e.preventDefault();
+      moveNoButton();
+    }, { passive: false });
+
+    yesBtn.addEventListener("click", function () {
+      buttonArea.style.display = "none";
+      message.textContent = "";
+      success.style.display = "block";
+    });
+  </script>
+</body>
+</html>
